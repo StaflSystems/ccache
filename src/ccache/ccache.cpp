@@ -327,6 +327,8 @@ do_guess_compiler(const fs::path& path)
     return CompilerType::gcc;
   } else if (name.find("nvcc") != std::string_view::npos) {
     return CompilerType::nvcc;
+  } else if (name.find("icc") != std::string_view::npos) {
+    return CompilerType::icc;
   } else if (name == "icl") {
     return CompilerType::icl;
   } else if (name == "icx") {
@@ -2823,6 +2825,14 @@ do_cache_compilation(Context& ctx)
         return Statistic::unsupported_environment_variable;
       }
     }
+  }
+
+  if (ctx.config.compiler_type() == CompilerType::icc
+      && (!ctx.config.depend_mode() || !ctx.config.direct_mode())) {
+    LOG_RAW(
+      "IAR icc is only supported when both depend mode and direct mode are "
+      "enabled.");
+    return tl::unexpected(Statistic::disabled);
   }
 
   if (ctx.config.depend_mode()

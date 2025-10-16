@@ -629,6 +629,8 @@ _<<Using ccache with other compiler wrappers>>_.
     clang-cl.
 *gcc*::
     GCC-based compiler.
+*icc*::
+    IAR compiler.
 *icl*::
     Intel compiler on Windows.
 *icx*::

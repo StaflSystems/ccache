@@ -421,6 +421,43 @@ process_option_arg(const Context& ctx,
     return Statistic::called_for_preprocessing;
   }
 
+  if (arg == "-lC" && config.compiler_type() == CompilerType::icc) {
+    if (i == args.size() - 1) {
+      LOG("Expected argument after {}", args[i]);
+      return Statistic::bad_compiler_arguments;
+    }
+
+    // TODO: should the arg to output the preprocessor output
+    // be added to the state?
+
+    ++i;
+    return Statistic::none;
+  }
+
+  if (util::starts_with(arg, "--dependencies")
+      && config.compiler_type() == CompilerType::icc) {
+    if (i == args.size() - 1) {
+      LOG("Expected 1 arguments after {}", args[i]);
+      return Statistic::bad_compiler_arguments;
+    }
+
+    state.found_md_or_mmd_opt = true;
+    state.found_mf_opt = true;
+    args_info.generating_dependencies = true;
+    state.add_compiler_only_arg(args[i]);
+
+    std::string dep_file{args[i + 1]};
+    if (state.output_dep_origin <= OutputDepOrigin::mf) {
+      state.output_dep_origin = OutputDepOrigin::mf;
+      args_info.output_dep = core::make_relative_path(ctx, dep_file);
+    }
+
+    state.add_compiler_only_arg(args_info.output_dep);
+
+    i++;
+    return Statistic::none;
+  }
+
   // Handle "@file" argument.
   if (util::starts_with(arg, "@") || util::starts_with(arg, "-@")) {
     const char* argpath = arg.c_str() + 1;
@@ -710,6 +747,7 @@ process_option_arg(const Context& ctx,
       return Statistic::bad_compiler_arguments;
     }
     args_info.output_obj = args[i + 1];
+    LOG("Found output: {}", args_info.output_obj);
     i++;
     return Statistic::none;
   }
@@ -801,6 +839,12 @@ process_option_arg(const Context& ctx,
         args_info.seen_split_dwarf = true;
       }
     }
+    return Statistic::none;
+  }
+
+  if (arg == "--debug" && config.compiler_type() == CompilerType::icc) {
+    state.add_common_arg(args[i]);
+    args_info.generating_debuginfo = true;
     return Statistic::none;
   }
 
@@ -1369,7 +1413,8 @@ process_args(Context& ctx)
 
   const bool is_link =
     !(state.found_c_opt || state.found_dc_opt || state.found_S_opt
-      || state.found_syntax_only || state.found_analyze_opt);
+      || state.found_syntax_only || state.found_analyze_opt
+      || config.compiler_type() == CompilerType::icc);
 
   if (state.input_files.empty()) {
     LOG_RAW("No input file found");

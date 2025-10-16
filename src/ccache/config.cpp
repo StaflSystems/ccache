@@ -287,6 +287,8 @@ parse_compiler_type(const std::string& value)
     return CompilerType::clang_cl;
   } else if (value == "gcc") {
     return CompilerType::gcc;
+  } else if (value == "icc") {
+    return CompilerType::icc;
   } else if (value == "icl") {
     return CompilerType::icl;
   } else if (value == "icx") {
@@ -546,6 +548,7 @@ compiler_type_to_string(CompilerType compiler_type)
 
     CASE(clang);
     CASE(gcc);
+    CASE(icc);
     CASE(icl);
     CASE(icx);
     CASE(msvc);

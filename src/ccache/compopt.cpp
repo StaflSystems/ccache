@@ -56,12 +56,15 @@ const CompOpt compopts[] = {
   {"--compiler-options",      AFFECTS_CPP | TAKES_ARG                                }, // nvcc
   {"--config",                TAKES_ARG                                              }, // Clang
   {"--em-config",             TAKES_ARG                                              }, // emcc
+  {"--f",                     TOO_HARD                                               }, // icc
   {"--gcc-toolchain=",        TAKES_CONCAT_ARG | TAKES_PATH                          }, // Clang
   {"--include",               AFFECTS_CPP | TAKES_ARG | TAKES_CONCAT_ARG | TAKES_PATH},
   {"--libdevice-directory",   AFFECTS_CPP | TAKES_ARG                                }, // nvcc
   {"--offload-compress",      AFFECTS_COMP                                           }, // Clang
   {"--output-directory",      AFFECTS_CPP | TAKES_ARG                                }, // nvcc
   {"--param",                 TAKES_ARG                                              },
+  {"--predef_macros",         TOO_HARD                                               }, // icc
+  {"--preprocess",            TOO_HARD                                               }, // icc
   {"--save-temps",            TOO_HARD                                               },
   {"--save-temps=cwd",        TOO_HARD                                               },
   {"--save-temps=obj",        TOO_HARD                                               },
@@ -124,6 +127,7 @@ const CompOpt compopts[] = {
   {"-emit-pth",               AFFECTS_COMP                                           }, // Clang
   {"-external:I",
    AFFECTS_CPP | TAKES_ARG | TAKES_CONCAT_ARG | TAKES_PATH                           }, // msvc
+  {"-f",                      TOO_HARD                                               }, // icc
   {"-fbuild-session-file=",   TAKES_CONCAT_ARG | TAKES_PATH                          },
   {"-fmodule-header",         TOO_HARD                                               },
   {"-fmodule-map-file=",      TAKES_CONCAT_ARG | TAKES_PATH                          },

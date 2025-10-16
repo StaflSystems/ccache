@@ -40,6 +40,7 @@ enum class CompilerType {
   clang,
   clang_cl,
   gcc,
+  icc,
   icl,
   icx,
   icx_cl,

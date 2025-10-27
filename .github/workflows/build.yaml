@@ -693,10 +693,6 @@ jobs:
         with:
           name: release
           path: release
-      - name: Create release notes
-        run: |
-          TAG_NAME="${{ github.event.inputs.test_tag || github.ref_name }}"
-          ci/generate-release-notes "${TAG_NAME}" >release-notes.md
       - name: Create GitHub Release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -704,7 +700,6 @@ jobs:
           TAG_NAME="${{ github.event.inputs.test_tag || github.ref_name }}"
           gh release create "${TAG_NAME}" \
             --draft \
-            --notes-file release-notes.md \
             --title "${TAG_NAME#v*}" \
             release/*
 
